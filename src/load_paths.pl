@@ -11,8 +11,12 @@ top_level_directory(Path) :-
     relative_file_name(Path, File, '..').
 
 add_terminus_home_path :-
-    top_level_directory(TopDir),
-    directory_file_path(TopDir, 'src', SrcDir),
+    (   getenv('TERMINUSDB_PROLOG_SRC', SrcDir)
+    ->  true
+    ;   top_level_directory(TopDir),
+        directory_file_path(TopDir, 'src', SrcDir)
+    ),
+    retractall(user:file_search_path(terminus_home, _)),
     asserta(user:file_search_path(terminus_home, SrcDir)).
 
 :- add_terminus_home_path.
